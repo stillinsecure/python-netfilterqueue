@@ -220,6 +220,12 @@ cdef class NetfilterQueue:
                 if errno != ENOBUFS:
                     break
 
+    def get_packet(self, s):
+        buf = s.recv(BufferSize)
+        rv = len(buf)
+        if rv >= 0:
+            nfq_handle_packet(self.h, buf, rv)
+
     def run_socket(self, s):
         """Accept packets using socket.recv so that, for example, gevent can monkeypatch it."""
         while True:
